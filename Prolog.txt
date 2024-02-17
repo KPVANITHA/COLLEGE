@@ -1,0 +1,49 @@
+l2Prolog
+/* This program implements a forward chaining rule-based system.
+
+The rules are:
+
+* If a person is a frog, then they are green.
+* If a person is a canary, then they are yellow.
+* If a person croaks and eats flies, then they are a frog.
+* If a person sings, chips, and has wings, then they are a canary.
+
+The program starts by asserting the fact that "tweety is a frog".
+
+The program then uses the forward chaining rules to deduce that "tweety is green" and "tweety is a canary".
+*/
+
+rule(1, frog(X) :- croaks(X), eats_flies(X)).
+rule(2, green(X) :- frog(X)).
+rule(3, yellow(X) :- canary(X)).
+rule(4, canary(X) :- sings(X), chips(X), has_wings(X)).
+
+fact(1, tweety is a frog).
+
+/* The forward chaining algorithm */
+
+forward(Rules, Goal) :-
+  findall(NewFact, (member(Head, Rules), assert(fact(NewFact, Head))), NewFacts),
+  findall(NewGoal, (member(Head, Rules), forward(Rules, Head)), NewGoals),
+  NewGoals = [].
+
+/* The main program */
+
+main :-
+  forward([rule(1, _, _)], tweety is green).
+
+
+
+
+____________________________________________________________________
+
+missile(m).
+owns(nono,m).
+enemy(nono,american).
+american(west).
+weapon(X):- missile(X).
+sells(west,X,nono):- missile(X),owns(nono,X).
+hostile(X):-enemy(X,american).
+criminal(X):-american(X),weapon(Y),sells(X,Y,Z),hostile(Z).
+______________________________________________________________________
+
